@@ -1,10 +1,12 @@
 #include <Arduino.h>
 #include "TFTDisplay.h"
 #include "BluetoothControl.h"
+#include "GifPlayer.h"
+#include "Globals.h"
 
 void setup() {
   Serial.begin(115200);
-
+  setupGifPlayer();
   // Initialize Bluetooth
   initBluetooth();
 
@@ -29,6 +31,7 @@ void setup() {
 }
 
 void loop() {
+  loopGifPlayer();
   for (int i = 0; i < fileCount; i++) {
     if (folder == "/") {
       scalePic("/" + jpgFiles[i]);

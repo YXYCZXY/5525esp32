@@ -1,7 +1,6 @@
 #include "TFTDisplay.h"
+#include "Globals.h"
 
-// Initialize TFT display
-TFT_eSPI tft = TFT_eSPI();
 String jpgFiles[maxFiles];
 int fileCount = 0;
 String folder = "/";

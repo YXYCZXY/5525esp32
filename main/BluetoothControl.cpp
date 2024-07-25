@@ -12,6 +12,21 @@ String chipId;
 #define CHARACTERISTIC_UUID_RX "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
 #define CHARACTERISTIC_UUID_TX "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"
 
+// 生成一个随机的4位字符串
+String generateRandomString() {
+  String randomString = "";
+  for (int i = 0; i < 4; i++) {
+    char randomChar = random(0, 36); // 0-9和a-z，共36个字符
+    if (randomChar < 10) {
+      randomChar += '0'; // 0-9
+    } else {
+      randomChar += 'a' - 10; // a-z
+    }
+    randomString += randomChar;
+  }
+  return randomString;
+}
+
 class MyServerCallbacks: public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) {
       deviceConnected = true;
@@ -35,29 +50,12 @@ class MyCallbacks: public BLECharacteristicCallbacks {
         }
         Serial.println();
         Serial.println("*********");
-        if(resStr == "getid"){
-          pTxCharacteristic->setValue(chipId.c_str());
-          pTxCharacteristic->notify();
-        }else if(resStr == "light1on"){
-          digitalWrite(14, 1);
-        }else if(resStr == "light1off"){
-          digitalWrite(14, 0);
-        }else if(resStr == "light2on"){
-          digitalWrite(12, 1);
-        }else if(resStr == "light2off"){
-          digitalWrite(12, 0);
-        }
-        resStr = "";
+        //调用图片切换
       }
     }
 };
 
-// 生成一个四位随机数，并拼接到 "5525" 后面
-String generateBLEName() {
-  String baseName = "5525";
-  String randomSuffix = String(random(1000, 9999));  // 生成四位随机数
-  return baseName + '_' + randomSuffix;
-}
+
 
 void initBluetooth() {
   pinMode(14, OUTPUT);
@@ -68,9 +66,11 @@ void initBluetooth() {
   chipId.toUpperCase();
   
   Serial.println(chipId);
-  String bleName = generateBLEName();
-  // Create the BLE Device
-  BLEDevice::init(bleName.c_str());
+
+  String deviceName = "5525!" + generateRandomString();
+  BLEDevice::init(deviceName.c_str());
+
+  Serial.println("Device initialized with name: " + deviceName);
 
   // Create the BLE Server
   pServer = BLEDevice::createServer();
