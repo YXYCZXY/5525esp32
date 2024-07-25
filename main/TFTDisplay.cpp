@@ -7,7 +7,7 @@ String folder = "/";
 
 bool tft_output(int16_t x, int16_t y, uint16_t w, uint16_t h, uint16_t *bitmap) {
   tft.pushImage(x, y, w, h, bitmap);
-  delay(5); // Delay for line-by-line display effect
+  delay(2); // Delay for line-by-line display effect
   return 1;
 }
 
@@ -56,6 +56,7 @@ void scalePic(String fileName) {
   } else {
     TJpgDec.setJpgScale(1);
   }
+  Serial.print(", a = ");
   Serial.println(a);
   TJpgDec.drawSdJpg(0, 0, fileName);
 }

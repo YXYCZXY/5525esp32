@@ -2,15 +2,15 @@
 
 #include "GifPlayer.h"
 #include "Globals.h"
-
+#include "TFTDisplay.h"
 TFT_eSPI tft = TFT_eSPI();
 
 AnimatedGIF gif;
 
-#include "images/x_wing.h"
+#include "images/FIVE.h"
 
 // Uncomment the image to display
-#define GIF_IMAGE x_wing
+#define GIF_IMAGE FIVE
 
 #define DISPLAY_WIDTH  tft.width()
 #define DISPLAY_HEIGHT tft.height()
@@ -24,15 +24,15 @@ AnimatedGIF gif;
 bool dmaBuf = 0;
 
 void setupGifPlayer() {
-    Serial.begin(115200);
     tft.begin();
-    tft.setRotation(2); // Adjust Rotation of your screen (0-3)
+    tft.setRotation(0); // Adjust Rotation of your screen (0-3)
     tft.fillScreen(TFT_BLACK);
     gif.begin(BIG_ENDIAN_PIXELS);
 }
 
 void loopGifPlayer() {
     if (gif.open((uint8_t *)GIF_IMAGE, sizeof(GIF_IMAGE), GIFDraw)) {
+      Serial.printf("触发open\n");
         Serial.printf("Successfully opened GIF; Canvas size = %d x %d\n", gif.getCanvasWidth(), gif.getCanvasHeight());
         tft.startWrite();
         while (gif.playFrame(true, NULL)) {
@@ -42,6 +42,18 @@ void loopGifPlayer() {
         tft.endWrite(); 
     }
 }
+void closeGif() {
+  Serial.printf("结束\n");
+    gif.close();
+    tft.begin();
+    tft.fillScreen(TFT_BLACK);
+    tft.setSwapBytes(true);
+
+    // Set callback for JPEG decoding
+    TJpgDec.setCallback(tft_output);
+}
+
+
 
 void GIFDraw(GIFDRAW *pDraw) {
     uint8_t *s;

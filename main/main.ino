@@ -4,6 +4,7 @@
 #include "GifPlayer.h"
 #include "Globals.h"
 
+bool isGifRunning = true;
 void setup() {
   Serial.begin(115200);
   setupGifPlayer();
@@ -24,20 +25,23 @@ void setup() {
   tft.setSwapBytes(true);
 
   // Set callback for JPEG decoding
-  TJpgDec.setCallback(tft_output);
+  // TJpgDec.setCallback(tft_output);
 
   // List JPG files in the root directory
   listJpgFiles(folder);
 }
 
 void loop() {
-  loopGifPlayer();
-  for (int i = 0; i < fileCount; i++) {
-    if (folder == "/") {
-      scalePic("/" + jpgFiles[i]);
-    } else {
-      scalePic(folder + "/" + jpgFiles[i]);
-    }
-    delay(5000); // Switch images every 5 seconds
+  if(isGifRunning){
+    loopGifPlayer();
   }
+  
+  // for (int i = 0; i < fileCount; i++) {
+  //   if (folder == "/") {
+  //     scalePic("/" + jpgFiles[i]);
+  //   } else {
+  //     scalePic(folder + "/" + jpgFiles[i]);
+  //   }
+  //   delay(5000); // Switch images every 5 seconds
+  // }
 }
